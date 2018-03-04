@@ -1,0 +1,30 @@
+version: '2.1'
+
+services:
+  server:
+    container_name: server
+    build: ./server/
+    volumes:
+      - './server:/usr/src/server'
+      - './server/package.json:/usr/src/package.json'
+    ports:
+      - '4000:4000' # expose ports - HOST:CONTAINER
+    environment:
+      - PORT=4000
+
+  client:
+    container_name: client
+    build: ./client/
+    volumes:
+      - './client:/usr/src/client'
+      - './client/package.json:/usr/src/package.json'
+    ports:
+      - '3002:3002' # expose ports - HOST:CONTAINER
+    environment:
+      - REACT_APP_PUBLIC_URL=http://localhost:3002
+      - REACT_APP_SOCKET_URL=http://localhost:4000
+      - PORT=3002
+
+    depends_on:
+      shale-server:
+        condition: service_started
